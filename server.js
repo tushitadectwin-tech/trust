@@ -55,6 +55,30 @@ app.get("/api/health", async (req, res) => {
   }
 });
 
+app.get("/services", async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT *
+       FROM public.services
+       ORDER BY id DESC`
+    );
+
+    return res.status(200).json({
+      success: true,
+      services: result.rows,
+    });
+  } catch (error) {
+    console.error("Fetch services error:", error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch services",
+      error: error.message,
+    });
+  }
+});
+
+
 // ADMIN ROUTES
 app.use("/api/admin", adminRoutes);
 
