@@ -269,7 +269,8 @@ app.get("/db-check", async (req, res) => {
 });
 
 
-app.post("/login", async (req, res) => {
+
+router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -280,6 +281,7 @@ app.post("/login", async (req, res) => {
       });
     }
 
+    // Check Neon database
     const result = await pool.query(
       `SELECT id, full_name, email, password_hash
        FROM public.admin_users
@@ -290,29 +292,31 @@ app.post("/login", async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(401).json({
         success: false,
-        message: "Invalid email or password",
+        message: "Admin account not found",
       });
     }
 
     const admin = result.rows[0];
 
-
-    if (password !== admin.password_hash) {
+    // Current database password is stored as plain text
+    if (String(password) !== String(admin.password_hash)) {
       return res.status(401).json({
         success: false,
         message: "Invalid email or password",
       });
     }
 
+    // Check JWT secret
     if (!process.env.JWT_SECRET) {
-      console.error("JWT_SECRET is missing in .env");
+      console.error("JWT_SECRET missing in Render");
 
       return res.status(500).json({
         success: false,
-        message: "Server configuration error",
+        message: "JWT_SECRET is missing in Render",
       });
     }
 
+    // Generate token
     const token = jwt.sign(
       {
         id: admin.id,
@@ -333,16 +337,17 @@ app.post("/login", async (req, res) => {
         email: admin.email,
       },
     });
+
   } catch (error) {
-    console.error("Admin login error:", error.message);
+    console.error("ADMIN LOGIN ERROR:", error);
 
     return res.status(500).json({
       success: false,
       message: "Internal server error",
+      error: error.message,
     });
   }
 });
-
 
 app.get("/services", async (req, res) => {
   try {
