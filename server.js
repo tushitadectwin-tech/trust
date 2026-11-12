@@ -7,7 +7,7 @@
 // const pool = require("./db");
  const adminRoutes = require("./routes/adminRoutes");
 
- const app = express();
+ //const app = express();
 
 // // MIDDLEWARE
 // app.use(cors({
