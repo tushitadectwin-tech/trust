@@ -392,7 +392,7 @@ app.get("/services/:id", async (req, res) => {
 });
 
 
-router.post("/services", handleUpload, async (req, res) => {
+app.post("/services", handleUpload, async (req, res) => {
   let uploadedImage = null;
 
   try {
@@ -447,7 +447,7 @@ router.post("/services", handleUpload, async (req, res) => {
 });
 
 
-router.put("/services/:id", handleUpload, async (req, res) => {
+app.put("/services/:id", handleUpload, async (req, res) => {
   let uploadedImage = null;
 
   try {
@@ -537,7 +537,7 @@ router.put("/services/:id", handleUpload, async (req, res) => {
 });
 
 
-router.delete("/services/:id", async (req, res) => {
+app.delete("/services/:id", async (req, res) => {
   try {
     const result = await pool.query(
       `DELETE FROM public.services
@@ -594,7 +594,7 @@ const removeTeamPhoto = (photoPath) => {
     fs.unlinkSync(filePath);
   }
 };
-router.post("/teams", handleTeamUpload, async (req, res) => {
+app.post("/teams", handleTeamUpload, async (req, res) => {
   let uploadedPhoto = null;
 
   try {
@@ -670,7 +670,7 @@ router.post("/teams", handleTeamUpload, async (req, res) => {
 
 
 
-router.get("/teams", async (req, res) => {
+app.get("/teams", async (req, res) => {
   try {
     const result = await pool.query(
       `SELECT id, name, bio, photo, display_order, status
@@ -693,8 +693,7 @@ router.get("/teams", async (req, res) => {
   }
 });
 
-
-router.put("/teams/:id", handleTeamUpload, async (req, res) => {
+app.put("/teams/:id", handleTeamUpload, async (req, res) => {
   let uploadedPhoto = req.file
     ? `/uploads/team/${req.file.filename}`
     : null;
@@ -830,7 +829,7 @@ router.put("/teams/:id", handleTeamUpload, async (req, res) => {
 });
 
 
-router.delete("/teams/:id", async (req, res) => {
+app.delete("/teams/:id", async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -880,7 +879,7 @@ router.delete("/teams/:id", async (req, res) => {
     });
   }
 });
-router.get("/gallery", async (req, res) => {
+app.get("/gallery", async (req, res) => {
   try {
     const result = await pool.query(
       `SELECT id, title, image, created_at
@@ -904,7 +903,7 @@ router.get("/gallery", async (req, res) => {
     });
   }
 });
-router.post("/gallery", (req, res) => {
+app.post("/gallery", (req, res) => {
   galleryUpload.single("image")(req, res, async (uploadError) => {
 
     if (uploadError) {
@@ -965,7 +964,7 @@ router.post("/gallery", (req, res) => {
     }
   });
 });
-router.delete("/gallery/:id", async (req, res) => {
+app.delete("/gallery/:id", async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -1031,7 +1030,7 @@ router.delete("/gallery/:id", async (req, res) => {
 // POST /api/admin/contact
 // =====================================
 
-router.post("/contact", async (req, res) => {
+app.post("/contact", async (req, res) => {
   try {
     const {
       full_name,
@@ -1100,7 +1099,7 @@ router.post("/contact", async (req, res) => {
 // GET /api/admin/contact
 // =====================================
 
-router.get("/contact", async (req, res) => {
+app.get("/contact", async (req, res) => {
   try {
     const result = await pool.query(
       `SELECT
@@ -1141,7 +1140,7 @@ router.get("/contact", async (req, res) => {
 // POST /api/admin/donations
 // ==========================================
 
-router.post(
+app.post(
   "/donations",
   handleDonationUpload,
   async (req, res) => {
@@ -1247,7 +1246,7 @@ router.post(
 // GET /api/admin/donations
 // ==========================================
 
-router.get("/donations", async (req, res) => {
+app.get("/donations", async (req, res) => {
   try {
     const result = await pool.query(
       `SELECT
@@ -1284,7 +1283,7 @@ router.get("/donations", async (req, res) => {
 // POST /api/admin/job-applications
 // =============================================
 
-router.post(
+app.post(
   "/job-applications",
   handleApplicationUpload,
   async (req, res) => {
@@ -1543,7 +1542,7 @@ router.post(
 // GET /api/admin/job-applications
 // ==========================================
 
-router.get("/job-applications", async (req, res) => {
+app.get("/job-applications", async (req, res) => {
   try {
     const result = await pool.query(
       `SELECT
@@ -1592,7 +1591,7 @@ router.get("/job-applications", async (req, res) => {
 // GET /api/admin/job-applications/:id/document/:type
 // =============================================
 
-router.get(
+app.get(
   "/job-applications/:id/document/:type",
   async (req, res) => {
     try {
@@ -1696,7 +1695,7 @@ router.get(
 // GET /api/admin/job-applications/:id/download/:type
 // =============================================
 
-router.get(
+app.get(
   "/job-applications/:id/download/:type",
   async (req, res) => {
     try {
@@ -1781,7 +1780,7 @@ router.get(
 // GET ALL ROLES
 // GET /api/admin/roles
 
-router.get("/roles", async (req, res) => {
+app.get("/roles", async (req, res) => {
   try {
     const result = await pool.query(
       `SELECT
@@ -1816,7 +1815,7 @@ router.get("/roles", async (req, res) => {
 // ADD NEW ROLE
 // POST /api/admin/roles
 
-router.post("/roles", async (req, res) => {
+app.post("/roles", async (req, res) => {
   try {
     const { title, order = 0, active = true } = req.body;
 
@@ -1880,7 +1879,7 @@ router.post("/roles", async (req, res) => {
 // UPDATE ROLE
 // PUT /api/admin/roles/:id
 
-router.put("/roles/:id", async (req, res) => {
+app.put("/roles/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const { title, order, active } = req.body;
@@ -1961,7 +1960,7 @@ router.put("/roles/:id", async (req, res) => {
 
 
 // DATABASE HEALTH
-router.get("/api/health", async (req, res) => {
+app.get("/api/health", async (req, res) => {
   try {
     const result = await pool.query(
       "SELECT NOW() AS current_time, current_database() AS database_name"
@@ -1982,7 +1981,7 @@ router.get("/api/health", async (req, res) => {
   }
 });
 
-router.get("/services", async (req, res) => {
+app.get("/services", async (req, res) => {
   try {
     const result = await pool.query(
       `SELECT *
@@ -2007,10 +2006,10 @@ router.get("/services", async (req, res) => {
 
 
 // ADMIN ROUTES
-router.use("/api/admin", adminRoutes);
+app.use("/api/admin", adminRoutes);
 
 // 404 HANDLER
-router.use((req, res) => {
+app.use((req, res) => {
   res.status(404).json({
     success: false,
     message: `API route not found: ${req.method} ${req.originalUrl}`,
