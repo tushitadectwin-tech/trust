@@ -35,6 +35,7 @@
 
 
 
+
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
@@ -47,6 +48,9 @@ const teamUpload = require("./middleware/teamUpload");
 const uploadDir = path.join(__dirname, "./uploads/services");
 const galleryUpload = require("./middleware/galleryUpload");
 const handleDonationUpload = require("./middleware/donationUpload");
+
+
+ const app = express();
 // Ensure upload folder exists
 fs.mkdirSync(uploadDir, { recursive: true });
 const jobApplicationUploadDir = path.join(
