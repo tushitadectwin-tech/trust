@@ -9,34 +9,23 @@ const adminRoutes = require("./routes/adminRoutes");
 
 const app = express();
 
-// ===============================
 // MIDDLEWARE
-// ===============================
-
-app.use(
-  cors({
-    origin: "*", // Development: allow web and Android app
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+}));
 
 app.use(express.json({ limit: "20mb" }));
 app.use(express.urlencoded({ extended: true, limit: "20mb" }));
 
-// ===============================
-// STATIC IMAGE UPLOADS
-// ===============================
-
+// STATIC UPLOADS
 app.use(
   "/uploads",
   express.static(path.join(__dirname, "uploads"))
 );
 
-// ===============================
-// HEALTH CHECK API
-// ===============================
-
+// ROOT API
 app.get("/", (req, res) => {
   res.status(200).json({
     success: true,
@@ -44,20 +33,20 @@ app.get("/", (req, res) => {
   });
 });
 
-// ===============================
-// DATABASE CHECK API
-// ===============================
-
+// DATABASE HEALTH
 app.get("/api/health", async (req, res) => {
   try {
-    await pool.query("SELECT 1");
+    const result = await pool.query(
+      "SELECT NOW() AS current_time, current_database() AS database_name"
+    );
 
     res.status(200).json({
       success: true,
-      message: "Database connected successfully",
+      message: "Neon PostgreSQL connected successfully",
+      data: result.rows[0],
     });
   } catch (error) {
-    console.error("Database Health Error:", error);
+    console.error("Database Health Error:", error.message);
 
     res.status(500).json({
       success: false,
@@ -66,16 +55,10 @@ app.get("/api/health", async (req, res) => {
   }
 });
 
-// ===============================
 // ADMIN ROUTES
-// ===============================
-
 app.use("/api/admin", adminRoutes);
 
-// ===============================
 // 404 HANDLER
-// ===============================
-
 app.use((req, res) => {
   res.status(404).json({
     success: false,
@@ -83,10 +66,7 @@ app.use((req, res) => {
   });
 });
 
-// ===============================
-// GLOBAL ERROR HANDLER
-// ===============================
-
+// ERROR HANDLER
 app.use((err, req, res, next) => {
   console.error("Server Error:", err);
 
@@ -96,36 +76,24 @@ app.use((err, req, res, next) => {
   });
 });
 
-// ===============================
 // START SERVER
-// ===============================
-
 const PORT = process.env.PORT || 5001;
 
 const startServer = async () => {
   try {
     await pool.query("SELECT 1");
 
-    console.log("PostgreSQL connected successfully");
+    console.log("Neon PostgreSQL connected successfully");
 
     app.listen(PORT, "0.0.0.0", () => {
-      console.log("----------------------------------");
-      console.log("BACKEND SERVER STARTED");
-      console.log(`Local: http://localhost:${PORT}`);
-      console.log(`Network: http://192.168.1.8:${PORT}`);
-      console.log(`Gallery: http://192.168.1.8:${PORT}/api/admin/gallery`);
-      console.log("----------------------------------");
+      console.log(`Server running on port ${PORT}`);
+      console.log("Admin routes: /api/admin");
+      console.log("Health check: /api/health");
     });
-
   } catch (error) {
-    console.error(
-      "PostgreSQL connection failed:",
-      error.message
-    );
-
+    console.error("Database connection failed:", error.message);
     process.exit(1);
   }
 };
 
 startServer();
- 
