@@ -666,7 +666,7 @@ router.post("/teams", handleTeamUpload, async (req, res) => {
 
 
 
-router.get("/teams", async (req, res) => {
+app.get("/teams", async (req, res) => {
   try {
     const result = await pool.query(
       `SELECT id, name, bio, photo, display_order, status
