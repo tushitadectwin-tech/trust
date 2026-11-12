@@ -239,7 +239,7 @@ app.get("/test", (req, res) => {
 });
 
 
-router.get("/db-check", async (req, res) => {
+app.get("/db-check", async (req, res) => {
   try {
     const result = await pool.query(
       "SELECT NOW() AS current_time"
@@ -261,7 +261,7 @@ router.get("/db-check", async (req, res) => {
 });
 
 
-router.post("/login", async (req, res) => {
+app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -336,7 +336,7 @@ router.post("/login", async (req, res) => {
 });
 
 
-router.get("/services", async (req, res) => {
+app.get("/services", async (req, res) => {
   try {
     const result = await pool.query(
       `SELECT *
@@ -360,7 +360,7 @@ router.get("/services", async (req, res) => {
 });
 
 
-router.get("/services/:id", async (req, res) => {
+app.get("/services/:id", async (req, res) => {
   try {
     const result = await pool.query(
       `SELECT *
