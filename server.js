@@ -2003,10 +2003,10 @@ router.get("/services", async (req, res) => {
 
 
 // ADMIN ROUTES
-app.use("/api/admin", adminRoutes);
+router.use("/api/admin", adminRoutes);
 
 // 404 HANDLER
-app.use((req, res) => {
+router.use((req, res) => {
   res.status(404).json({
     success: false,
     message: `API route not found: ${req.method} ${req.originalUrl}`,
@@ -2014,7 +2014,7 @@ app.use((req, res) => {
 });
 
 // ERROR HANDLER
-app.use((err, req, res, next) => {
+router.use((err, req, res, next) => {
   console.error("Server Error:", err);
 
   res.status(err.status || 500).json({
