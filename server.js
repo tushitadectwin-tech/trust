@@ -1957,7 +1957,7 @@ router.put("/roles/:id", async (req, res) => {
 
 
 // DATABASE HEALTH
-app.get("/api/health", async (req, res) => {
+router.get("/api/health", async (req, res) => {
   try {
     const result = await pool.query(
       "SELECT NOW() AS current_time, current_database() AS database_name"
