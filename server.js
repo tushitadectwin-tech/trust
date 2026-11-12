@@ -1978,7 +1978,7 @@ app.get("/api/health", async (req, res) => {
   }
 });
 
-app.get("/services", async (req, res) => {
+router.get("/services", async (req, res) => {
   try {
     const result = await pool.query(
       `SELECT *
