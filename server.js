@@ -231,7 +231,7 @@ function handleUpload(req, res, next) {
 }
 
 
-router.get("/test", (req, res) => {
+app.get("/test", (req, res) => {
   res.status(200).json({
     success: true,
     message: "Admin routes are working",
