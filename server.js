@@ -42,16 +42,16 @@ const path = require("path");
 const multer = require("multer");
 const router = express.Router();
 const pool = require("./db");
-const upload = require("../middleware/uploads");
-const teamUpload = require("../middleware/teamUpload");
-const uploadDir = path.join(__dirname, "../uploads/services");
-const galleryUpload = require("../middleware/galleryUpload");
-const handleDonationUpload = require("../middleware/donationUpload");
+const upload = require("./middleware/uploads");
+const teamUpload = require("./middleware/teamUpload");
+const uploadDir = path.join(__dirname, "./uploads/services");
+const galleryUpload = require("./middleware/galleryUpload");
+const handleDonationUpload = require("./middleware/donationUpload");
 // Ensure upload folder exists
 fs.mkdirSync(uploadDir, { recursive: true });
 const jobApplicationUploadDir = path.join(
   __dirname,
-  "../uploads/private/job-applications"
+  "./uploads/private/job-applications"
 );
 
 fs.mkdirSync(jobApplicationUploadDir, { recursive: true });
