@@ -1,37 +1,37 @@
 
-const express = require("express");
-const cors = require("cors");
-const path = require("path");
-require("dotenv").config();
+// const express = require("express");
+// const cors = require("cors");
+// const path = require("path");
+// require("dotenv").config();
 
-const pool = require("./db");
-const adminRoutes = require("./routes/adminRoutes");
+// const pool = require("./db");
+// const adminRoutes = require("./routes/adminRoutes");
 
-const app = express();
+// const app = express();
 
-// MIDDLEWARE
-app.use(cors({
-  origin: "*",
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-}));
+// // MIDDLEWARE
+// app.use(cors({
+//   origin: "*",
+//   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+//   allowedHeaders: ["Content-Type", "Authorization"],
+// }));
 
-app.use(express.json({ limit: "20mb" }));
-app.use(express.urlencoded({ extended: true, limit: "20mb" }));
+// app.use(express.json({ limit: "20mb" }));
+// app.use(express.urlencoded({ extended: true, limit: "20mb" }));
 
-// STATIC UPLOADS
-app.use(
-  "/uploads",
-  express.static(path.join(__dirname, "uploads"))
-);
+// // STATIC UPLOADS
+// app.use(
+//   "/uploads",
+//   express.static(path.join(__dirname, "uploads"))
+// );
 
-// ROOT API
-app.get("/", (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: "PostgreSQL Backend API is running",
-  });
-});
+// // ROOT API
+// app.get("/", (req, res) => {
+//   res.status(200).json({
+//     success: true,
+//     message: "PostgreSQL Backend API is running",
+//   });
+// });
 
 
 
