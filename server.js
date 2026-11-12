@@ -51,6 +51,14 @@ const handleDonationUpload = require("./middleware/donationUpload");
 
 
  const app = express();
+
+// MIDDLEWARE
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+}));
+
 // Ensure upload folder exists
 fs.mkdirSync(uploadDir, { recursive: true });
 const jobApplicationUploadDir = path.join(
