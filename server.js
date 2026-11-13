@@ -277,84 +277,84 @@ app.get("/db-check", async (req, res) => {
 
 
 
-router.post("/login", async (req, res) => {
-  try {
-    const { email, password } = req.body;
+// router.post("/login", async (req, res) => {
+//   try {
+//     const { email, password } = req.body;
 
-    if (!email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: "Email and password are required",
-      });
-    }
+//     if (!email || !password) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Email and password are required",
+//       });
+//     }
 
-    // Check Neon database
-    const result = await pool.query(
-      `SELECT id, full_name, email, password_hash
-       FROM public.admin_users
-       WHERE LOWER(email) = LOWER($1)`,
-      [email.trim()]
-    );
+//     // Check Neon database
+//     const result = await pool.query(
+//       `SELECT id, full_name, email, password_hash
+//        FROM public.admin_users
+//        WHERE LOWER(email) = LOWER($1)`,
+//       [email.trim()]
+//     );
 
-    if (result.rows.length === 0) {
-      return res.status(401).json({
-        success: false,
-        message: "Admin account not found",
-      });
-    }
+//     if (result.rows.length === 0) {
+//       return res.status(401).json({
+//         success: false,
+//         message: "Admin account not found",
+//       });
+//     }
 
-    const admin = result.rows[0];
+//     const admin = result.rows[0];
 
-    // Current database password is stored as plain text
-    if (String(password) !== String(admin.password_hash)) {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid email or password",
-      });
-    }
+//     // Current database password is stored as plain text
+//     if (String(password) !== String(admin.password_hash)) {
+//       return res.status(401).json({
+//         success: false,
+//         message: "Invalid email or password",
+//       });
+//     }
 
-    // Check JWT secret
-    if (!process.env.JWT_SECRET) {
-      console.error("JWT_SECRET missing in Render");
+//     // Check JWT secret
+//     if (!process.env.JWT_SECRET) {
+//       console.error("JWT_SECRET missing in Render");
 
-      return res.status(500).json({
-        success: false,
-        message: "JWT_SECRET is missing in Render",
-      });
-    }
+//       return res.status(500).json({
+//         success: false,
+//         message: "JWT_SECRET is missing in Render",
+//       });
+//     }
 
-    // Generate token
-    const token = jwt.sign(
-      {
-        id: admin.id,
-        email: admin.email,
-        role: "admin",
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: "1d" }
-    );
+//     // Generate token
+//     const token = jwt.sign(
+//       {
+//         id: admin.id,
+//         email: admin.email,
+//         role: "admin",
+//       },
+//       process.env.JWT_SECRET,
+//       { expiresIn: "1d" }
+//     );
 
-    return res.status(200).json({
-      success: true,
-      message: "Admin login successful",
-      token,
-      admin: {
-        id: admin.id,
-        full_name: admin.full_name,
-        email: admin.email,
-      },
-    });
+//     return res.status(200).json({
+//       success: true,
+//       message: "Admin login successful",
+//       token,
+//       admin: {
+//         id: admin.id,
+//         full_name: admin.full_name,
+//         email: admin.email,
+//       },
+//     });
 
-  } catch (error) {
-    console.error("ADMIN LOGIN ERROR:", error);
+//   } catch (error) {
+//     console.error("ADMIN LOGIN ERROR:", error);
 
-    return res.status(500).json({
-      success: false,
-      message: "Internal server error",
-      error: error.message,
-    });
-  }
-});
+//     return res.status(500).json({
+//       success: false,
+//       message: "Internal server error",
+//       error: error.message,
+//     });
+//   }
+// });
 
 app.get("/services", async (req, res) => {
   try {
