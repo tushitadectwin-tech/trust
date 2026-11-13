@@ -59,6 +59,13 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "Authorization"],
 }));
 
+// ===============================
+// ADMIN ROUTES
+// ===============================
+
+app.use("/api/admin", adminRoutes);
+
+
 // Ensure upload folder exists
 fs.mkdirSync(uploadDir, { recursive: true });
 const jobApplicationUploadDir = path.join(
