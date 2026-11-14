@@ -1,203 +1,9 @@
-// const express = require("express");
-// const jwt = require("jsonwebtoken");
-// const router = express.Router();
 
-// const pool = require("../db");
-
-// // 1. Test API
-// router.get("/test", (req, res) => {
-//   res.status(200).json({
-//     success: true,
-//     message: "Admin routes are working",
-//   });
-// });
-
-// // 2. Check PostgreSQL Connection
-// router.get("/db-check", async (req, res) => {
-//   try {
-//     const result = await pool.query(
-//       "SELECT NOW() AS current_time"
-//     );
-
-//     res.status(200).json({
-//       success: true,
-//       message: "PostgreSQL connected successfully",
-//       data: result.rows[0],
-//     });
-//   } catch (error) {
-//     console.error("Database error:", error.message);
-
-//     res.status(500).json({
-//       success: false,
-//       message: "Database connection failed",
-//     });
-//   }
-// });
-
-// // 3. Admin Login API
-// router.post("/login", async (req, res) => {
-//   try {
-//     const { email, password } = req.body;
-
-//     // Validate input
-//     if (!email || !password) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Email and password are required",
-//       });
-//     }
-
-//     // Find admin by email
-//     const result = await pool.query(
-//       `SELECT id, full_name, email, password_hash
-//        FROM public.admin_users
-//        WHERE LOWER(email) = LOWER($1)`,
-//       [email.trim()]
-//     );
-
-//     if (result.rows.length === 0) {
-//       return res.status(401).json({
-//         success: false,
-//         message: "Invalid email or password",
-//       });
-//     }
-
-//     const admin = result.rows[0];
-
-//     // Plain-text password comparison
-//     if (password !== admin.password_hash) {
-//       return res.status(401).json({
-//         success: false,
-//         message: "Invalid email or password",
-//       });
-//     }
-
-//     // Check JWT secret
-//     if (!process.env.JWT_SECRET) {
-//       console.error("JWT_SECRET is missing in .env");
-
-//       return res.status(500).json({
-//         success: false,
-//         message: "Server configuration error",
-//       });
-//     }
-
-//     // Generate token
-//     const token = jwt.sign(
-//       {
-//         id: admin.id,
-//         email: admin.email,
-//         role: "admin",
-//       },
-//       process.env.JWT_SECRET,
-//       {
-//         expiresIn: "1d",
-//       }
-//     );
-
-//     // Successful login
-//     return res.status(200).json({
-//       success: true,
-//       message: "Admin login successful",
-//       token,
-//       admin: {
-//         id: admin.id,
-//         full_name: admin.full_name,
-//         email: admin.email,
-//       },
-//     });
-//   } catch (error) {
-//     console.error("Admin login error:", error.message);
-
-//     return res.status(500).json({
-//       success: false,
-//       message: "Internal server error",
-//     });
-//   }
-// });
-
-// // POST: Add a new service
-// router.post("/services", async (req, res) => {
-//   try {
-//     const {
-//       title,
-//       category,
-//       image,
-//       description,
-//       points,
-//       status = "Active",
-//     } = req.body;
-
-//     // Validation
-//     if (
-//       typeof title !== "string" ||
-//       !title.trim() ||
-//       typeof category !== "string" ||
-//       !category.trim() ||
-//       typeof description !== "string" ||
-//       !description.trim()
-//     ) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Title, category and description are required",
-//       });
-//     }
-
-//     if (
-//       points !== undefined &&
-//       (!Array.isArray(points) ||
-//         !points.every((point) => typeof point === "string"))
-//     ) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Points must be an array of strings",
-//       });
-//     }
-
-//     if (!["Active", "Inactive"].includes(status)) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Status must be Active or Inactive",
-//       });
-//     }
-
-//     // Insert into PostgreSQL
-//     const result = await pool.query(
-//       `INSERT INTO public.services
-//        (title, category, image, description, points, status)
-//        VALUES ($1, $2, $3, $4, $5::jsonb, $6)
-//        RETURNING *`,
-//       [
-//         title.trim(),
-//         category.trim(),
-//         image || null,
-//         description.trim(),
-//         JSON.stringify(points || []),
-//         status,
-//       ]
-//     );
-
-//     return res.status(201).json({
-//       success: true,
-//       message: "Service added successfully",
-//       service: result.rows[0],
-//     });
-//   } catch (error) {
-//     console.error("Add service error:", error.message);
-
-//     return res.status(500).json({
-//       success: false,
-//       message: "Failed to add service",
-//     });
-//   }
-// });
-
-
-// module.exports = router;
 
 
 
 const express = require("express");
+const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
 const path = require("path");
@@ -212,8 +18,9 @@ const handleDonationUpload = require("../middleware/donationUpload");
 // Ensure upload folder exists
 fs.mkdirSync(uploadDir, { recursive: true });
 const jobApplicationUploadDir = path.join(
-  __dirname,
-  "../uploads/private/job-applications"
+  "/var/data",
+  "private",
+  "job-applications"
 );
 
 fs.mkdirSync(jobApplicationUploadDir, { recursive: true });
@@ -1796,7 +1603,7 @@ router.get(
         });
       }
 
-      const uploadsRoot = path.resolve(__dirname, "../uploads");
+      const uploadsRoot = "/var/data";
       const absolutePath = path.resolve(uploadsRoot, documentPath);
 
       // Prevent path traversal outside uploads folder
@@ -1900,7 +1707,7 @@ router.get(
         });
       }
 
-      const uploadsRoot = path.resolve(__dirname, "../uploads");
+const uploadsRoot = "/var/data";
       const absolutePath = path.resolve(uploadsRoot, documentPath);
 
       if (
