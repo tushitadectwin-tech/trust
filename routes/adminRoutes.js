@@ -18,7 +18,7 @@ const handleDonationUpload = require("../middleware/donationUpload");
 // Ensure upload folder exists
 fs.mkdirSync(uploadDir, { recursive: true });
 const jobApplicationUploadDir = path.join(
-  "/var/data",
+  process.env.RENDER_DISK_PATH || "/var/data",
   "private",
   "job-applications"
 );
